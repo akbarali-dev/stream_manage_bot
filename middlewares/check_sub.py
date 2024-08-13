@@ -9,7 +9,8 @@ import logging
 class CheckSubscriptionMiddleware(BaseMiddleware):
     def __init__(self, bot: Bot):
         self.bot = bot
-        self.channel_ids = [-1001582550273, -1001752250778]  # bu yerda a'zao bo'lishi kerak bo'gan kanallar mavjud
+        self.channel_ids = []  # bu yerda a'zao bo'lishi kerak bo'gan kanallar mavjud
+        # self.channel_ids = [-1001582550273, -1001752250778]  # bu yerda a'zao bo'lishi kerak bo'gan kanallar mavjud
         super().__init__()
 
     async def __call__(self, handler, event: Message, data: dict):
@@ -38,4 +39,5 @@ class CheckSubscriptionMiddleware(BaseMiddleware):
 
         except TelegramBadRequest as e:
             logging.error(f"Telegram bad request: {e}")
+            print(event.text)
             return await event.answer("Noto'g'ri so'rov!")

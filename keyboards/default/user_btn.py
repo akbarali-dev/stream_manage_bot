@@ -2,7 +2,6 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo, MenuB
 
 
 def question_btn(sport_names):
-    print(sport_names)
     column = list()
     row = list()
     for i in range(0, len(sport_names)):

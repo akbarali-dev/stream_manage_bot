@@ -8,7 +8,9 @@ from loader import db
 
 class SportTypeFilter(Filter):
     async def __call__(self, message: Message) -> bool:
-        return await db.already_exists_sport_type(message.text)
+        nn = await db.already_exists_sport_type(message.text)
+        print("Filter")
+        print(nn['result'])
 
-
-
+        print(nn)
+        return nn['result']

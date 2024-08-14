@@ -1,4 +1,5 @@
 from typing import Text
+from aiogram.filters import command
 
 from loader import dp, db
 from aiogram.types import Message
@@ -15,6 +16,7 @@ from keyboards.inline.user_inline_btn import battle_data
 async def select_sport_battle(message: Message) -> None:
     competitions = await db.select_competitions_by_sport_type(name=message.text)
     image = await db.sport_type_image(name=message.text)
+    print(competitions)
     print(image['file_id'])
     await message.answer_photo(photo=image['file_id'],
         caption="Quyidagi musobaqalardan birini tanlang", reply_markup=battle_data(competitions))

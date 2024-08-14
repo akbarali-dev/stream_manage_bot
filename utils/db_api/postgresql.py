@@ -88,8 +88,10 @@ class Database:
 
     async def sport_types(self, **kwargs):
         sql = """
-        select name
-        from sport_types
+            select distinct st.name
+            from competition c
+                join sport_types st on c.sport_type_id = st.id
+            where c.active = true
         """
         sql, parameters = self.format_args(sql, kwargs)
         return await self.execute(sql, *parameters, fetch=True)
@@ -107,6 +109,15 @@ class Database:
         sql = """
         select *
         from competition
+        """
+        sql, parameters = self.format_args(sql, kwargs)
+        return await self.execute(sql, *parameters, fetchrow=True)
+
+    async def find_by_id_competition(self, **kwargs):
+        sql = """
+            select name, description, start_date, stream_link, file_id, active, sport_type_id::text
+            from competition where 
+
         """
         sql, parameters = self.format_args(sql, kwargs)
         return await self.execute(sql, *parameters, fetchrow=True)
@@ -130,6 +141,16 @@ class Database:
         from competition c
         join sport_types st on c.sport_type_id = st.id
         where st.name = '{name}' and c.active = true
+        """
+        sql, parameters = self.format_args(sql, kwargs)
+        return await self.execute(sql, *parameters, fetch=True)
+
+    async def select_competitions_by_sport_type_id(self, st_id, **kwargs):
+        sql = f"""
+        select c.name, c.id::text
+        from competition c
+        join sport_types st on c.sport_type_id = st.id
+        where st.id = '{st_id}' and c.active = true
         """
         sql, parameters = self.format_args(sql, kwargs)
         return await self.execute(sql, *parameters, fetch=True)

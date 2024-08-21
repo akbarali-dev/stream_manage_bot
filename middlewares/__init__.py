@@ -5,4 +5,4 @@ from . import check_sub
 
 def middleware_add(dp: Dispatcher, bot: Bot):
     dp.message.middleware(throttling.RateLimitMiddleware())
-    dp.message.middleware(check_sub.CheckSubscriptionMiddleware(bot))
+    # dp.message.middleware(check_sub.CheckSubscriptionMiddleware(bot))

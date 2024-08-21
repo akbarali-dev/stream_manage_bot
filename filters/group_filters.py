@@ -7,7 +7,6 @@ from aiogram import types
 from aiogram.filters import Filter
 from aiogram.types import Message
 
-from data.config import ADMINS
 
 
 class IsGroup(Filter):

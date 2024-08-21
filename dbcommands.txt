@@ -32,6 +32,31 @@ BEGIN
 END;
 $$;
 
+
+create or REPLACE function notify_data_inserted() returns trigger
+    language plpgsql
+as
+$$
+BEGIN
+    if (NEW.send_bot or NEW.send_channel) and NEW.file_id IS NOT NULL then
+        PERFORM pg_notify('data_change', json_build_object(
+                'payload', 'Yangi ma\shildi: ' || NEW.id,
+                'send_bot', NEW.send_bot,
+                'send_channel', NEW.send_channel,
+                'description', NEW.description,
+                'stream_link', NEW.stream_link,
+                'id', NEW.id,
+                'name', NEW.name,
+                'start_date', NEW.start_date,
+                'stream_link', NEW.stream_link,
+                'file_id', NEW.file_id
+                                         )::text);
+        RETURN NEW;
+    end if;
+    RETURN NEW;
+END;
+$$;
+
 CREATE or replace TRIGGER data_insert_trigger
 AFTER INSERT ON competition
 FOR EACH ROW EXECUTE FUNCTION notify_data_inserted();
@@ -40,3 +65,6 @@ FOR EACH ROW EXECUTE FUNCTION notify_data_inserted();
 CREATE or replace TRIGGER data_update_trigger
 AFTER UPDATE ON competition
 FOR EACH ROW EXECUTE FUNCTION notify_data_inserted();
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+ALTER TABLE users ALTER COLUMN id SET DEFAULT uuid_generate_v4();

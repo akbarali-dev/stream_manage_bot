@@ -1,11 +1,11 @@
 import logging
 
-from data.config import ADMINS
-
+from loader import db
 
 async def on_startup_admins(bot):
-    for ADMIN in ADMINS:
+    admins = await db.select_admins()
+    for ADMIN in admins:
         try:
-            await bot.send_message(chat_id=ADMIN, text="Bot ishga tushdi")
+            await bot.send_message(chat_id=ADMIN['chat_id'], text="Bot ishga tushdi")
         except Exception as err:
             logging.exception(err)

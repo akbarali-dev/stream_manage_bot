@@ -5,7 +5,11 @@ from middlewares import middleware_add
 from data.config import BOT_TOKEN
 from utils.db_api.postgresql import Database
 
-dp = Dispatcher()
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+dp = Dispatcher(skip_updates=True)
+
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 middleware_add(dp, bot)
 db = Database()

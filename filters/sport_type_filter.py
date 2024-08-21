@@ -2,7 +2,6 @@ from aiogram import types
 from aiogram.filters import Filter
 from aiogram.types import Message
 
-from data.config import ADMINS
 from loader import db
 
 

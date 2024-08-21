@@ -5,7 +5,6 @@ import sys
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
-from data.config import BOT_TOKEN, ADMINS
 from loader import dp, bot, db
 from handlers.users.start import command_start_handler
 from utils.notify_admins import on_startup_admins
@@ -24,8 +23,9 @@ async def on_startup():
 async def main() -> None:
     # bot.send_photo(parse_mode=)
     dp.message.once = False
+
     await on_startup()
-    await dp.start_polling(bot)
+    await dp.start_polling(bot, skip_updates=True)
 
 
 if __name__ == "__main__":

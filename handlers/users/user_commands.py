@@ -19,4 +19,4 @@ async def select_sport_battle(message: Message) -> None:
     print(competitions)
     print(image['file_id'])
     await message.answer_photo(photo=image['file_id'],
-        caption="Quyidagi musobaqalardan birini tanlang", reply_markup=battle_data(competitions))
+        caption="Choose one of the competitions below", reply_markup=battle_data(competitions))

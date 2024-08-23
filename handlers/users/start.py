@@ -19,14 +19,14 @@ async def try_add_user(full_name: str, chat_id: int) -> None:
 
 
 @dp.message(CommandStart())
-@dp.message(F.text == '🏠Asosiy menu')
+@dp.message(F.text == '🏠Main menu')
 async def command_start_handler(message: Message) -> None:
     await try_add_user(message.from_user.full_name, message.chat.id)
     channels = await db.select_all_channel()
     if channels:
-        msg1 = "Tavsiya etilgan kanallar"
+        msg1 = "Recommended channels 📺"
         await message.answer(msg1, reply_markup=channel_btns(channels))
     sport_types = await db.sport_types()
-    msg2 = "Quyidagi sport musobaqalaridan birini tanlang"
+    msg2 = "Choose one of the sports events below"
 
     await message.answer(msg2, reply_markup=question_btn(sport_types), parse_mode="html")

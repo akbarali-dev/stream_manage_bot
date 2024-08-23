@@ -9,7 +9,7 @@ def question_btn(sport_names):
         if i % 2 == 1:
             column.append(row)
             row = []
-    row.append(KeyboardButton(text="🏠Asosiy menu"))
+    row.append(KeyboardButton(text="🏠Main menu"))
     column.append(row)
     sport_btns = ReplyKeyboardMarkup(keyboard=column, resize_keyboard=True)
     return sport_btns

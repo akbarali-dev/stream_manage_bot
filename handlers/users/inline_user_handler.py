@@ -24,8 +24,8 @@ def generate_caption(data):
     time = date_time_obj.time().replace(tzinfo=None, microsecond=0)
     caption = f"<b>👊 {data['name']}</b>\n\n"
     caption += f"<i>📋 {data['description']}</i>\n\n"
-    caption += f"<u>📅 Kun: {date}</u>\n"
-    caption += f"<u>🕔 Vaqti: {time}</u>\n"
+    caption += f"<u>📅 Date: {date}</u>\n"
+    caption += f"<u>🕔 Time: {time}</u>\n"
     return caption
 
 

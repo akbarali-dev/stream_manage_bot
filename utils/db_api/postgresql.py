@@ -118,8 +118,8 @@ class Database:
         time = date_time_obj.time().replace(tzinfo=None, microsecond=0)
         caption = f"<b>👊 {data.get('name')}</b>\n\n"
         caption += f"<i>📋 {data.get('description')}</i>\n\n"
-        caption += f"<u>📅 Kun: {date}</u>\n"
-        caption += f"<u>🕔 Vaqti: {time}</u>\n"
+        caption += f"<u>📅 Date: {date}</u>\n"
+        caption += f"<u>🕔 Time: {time}</u>\n"
         return str(caption)
 
     async def send_notification(self, chat_id, caption, file_id, markup, loader):
@@ -192,7 +192,6 @@ class Database:
             offset += batch_size
 
     async def test(self):
-        print("Funksiya ichiga kirdi")
         await asyncio.sleep(2)
         admins = await self.select_admins()
         return admins

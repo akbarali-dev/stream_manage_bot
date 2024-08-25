@@ -46,18 +46,17 @@ async def selected_competition(query: CallbackQuery, callback_data: MyCallback):
 @dp.callback_query(MyCallback.filter(F.foo == 'cancel'))
 async def competition_cancel(query: CallbackQuery, callback_data: MyCallback):
     print("bekor qilindi kirdi")
+
     com = callback_data.unpack(query.data)
     c_id = com.bar
     job = scheduler.get_job(c_id)
     if job:
         job.remove()
-        print(f"Vazifa {c_id} bekor qilindi!")
-        await query.answer("Bekor qilindi ❌")
+        await query.answer("Cancel ❌")
         await query.message.delete()
     else:
-        await query.answer("Vazifa topilmadi")
+        await query.answer("Notification not found ❗️")
         await query.message.delete()
-        print(f"Vazifa {c_id} topilmadi!")
 
 
 @dp.callback_query(MyCallback.filter(F.foo == 'confirm'))
@@ -66,13 +65,13 @@ async def competition_confirm(query: CallbackQuery, callback_data: MyCallback):
     c_id = com.bar
     job = scheduler.get_job(c_id)
     if job:
-        await query.answer("Tasdiqlandi ✅")
+        await query.answer("Confirm ✅")
         job.remove()
         competition = await db.find_by_id_competition(id=c_id)
         await query.message.delete()
         await db.send_notification_all(caption_arg=generate_caption(competition), competition=competition)
     else:
-        print(f"Vazifa {c_id} topilmadi!")
+        await query.answer("Notification not found ❗️")
 
 
 

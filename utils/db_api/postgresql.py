@@ -75,22 +75,16 @@ class Database:
             while True:
                 await asyncio.sleep(10)
 
-    def notification_handler(self, connection, pid, channel, payload):
+    async def notification_handler(self, connection, pid, channel, payload):
         """Notification kelganda ishlovchi funksiya"""
-
         data = json.loads(payload)
-        message = data.get('payload')
-        send_bot = data.get('send_bot')
-        send_channel = data.get('send_channel')
-        description = data.get('description')
-        file_id = data.get('file_id')
-
-        asyncio.create_task(self.send_admin(data))
-        run_at = datetime.now() + timedelta(seconds=40)
+        # asyncio.create_task(self.send_admin(data))
+        msgs_ids = await self.send_admin(data)
+        run_at = datetime.now() + timedelta(seconds=30)
         scheduler.add_job(func=self.send_notification_all,
                           trigger=IntervalTrigger(start_date=run_at, end_date=run_at + timedelta(seconds=0.1)),
                           id=data.get('id'),
-                          kwargs={"data": data})
+                          kwargs={"data": data, "msgs": msgs_ids})
         try:
             scheduler.start()
         except SchedulerAlreadyRunningError:
@@ -101,15 +95,17 @@ class Database:
         asyncio.create_task(self.send_notification_all(data))
 
     async def send_admin(self, data):
-
+        send_msgs = {}
         module_a = importlib.import_module('loader')
         admins = await self.select_admins()
         for admin in admins:
-            await module_a.bot.send_photo(chat_id=admin['chat_id'],
+            msg = await module_a.bot.send_photo(chat_id=admin['chat_id'],
                                           caption=self.generate_caption(data),
                                           photo=data.get('file_id'),
                                           reply_markup=admin_battle_data_btns(data.get('stream_link'),
                                                                               data.get('id')))
+            send_msgs[msg.chat.id] = msg.message_id
+        return send_msgs
 
     def generate_caption(self, data):
         date_time_str = data.get('start_date')
@@ -130,7 +126,7 @@ class Database:
         except Exception as e:
             print(e)
 
-    async def send_notification_all(self, data=None, competition=None, caption_arg=None):
+    async def send_notification_all(self, data=None, competition=None, caption_arg=None, msgs = None):
         caption=""
         link=""
         file_id=""
@@ -155,6 +151,9 @@ class Database:
             send_channel = competition['send_channel']
             com_id = competition['id']
 
+        for c_id, m_id in msgs.items():
+            await loader.bot.delete_message(chat_id=c_id, message_id=m_id)
+
         markup = stream_link(link)
         if send_bot:
             async for user_ids in self.fetch_all_user_ids_in_batches(batch_size=1000):
@@ -166,21 +165,10 @@ class Database:
                 await asyncio.sleep(1)
         if send_channel:
             channels =await self.select_channel(com_id=com_id)
-            print(channels)
             for channel in channels:
                 await self.send_notification("@"+channel['username'], caption, file_id, markup, loader)
                 await asyncio.sleep(1)
-            # for channel in
-            # async for channels in  self.select_channel_list(com_id=com_id):
-            #     tasks = [
-            #         # self.send_notification("@"+channel['username'], caption, file_id, markup, loader)
-            #         for channel in channels
-            #     ]
-            #     await asyncio.gather(*tasks)
-            #     await asyncio.sleep(1)
-        #
-        # for user in users:
-        #     await self.send_notification(user['chat_id'], caption, file_id, markup, loader)
+
 
     async def fetch_all_user_ids_in_batches(self, batch_size: int = 1000):
         offset = 0

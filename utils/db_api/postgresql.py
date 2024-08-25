@@ -134,7 +134,6 @@ class Database:
         send_channel=False
         loader = importlib.import_module('loader')
         com_id = ""
-        print(competition)
         if data:
             caption = self.generate_caption(data)
             link = data.get('stream_link')
@@ -150,9 +149,9 @@ class Database:
             send_bot = competition['send_bot']
             send_channel = competition['send_channel']
             com_id = competition['id']
-
-        for c_id, m_id in msgs.items():
-            await loader.bot.delete_message(chat_id=c_id, message_id=m_id)
+        if msgs:
+            for c_id, m_id in msgs.items():
+                await loader.bot.delete_message(chat_id=c_id, message_id=m_id)
 
         markup = stream_link(link)
         if send_bot:
